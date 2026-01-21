@@ -63,7 +63,7 @@ export default function PostForm({ onSuccess, postId, initialTitle = '', initial
       onSuccess();
     } catch (error: any) {
       console.error('게시글 작성 실패:', error);
-      alert(error.message || '게시글 작성에 실패했습니다.');
+      alert('게시글 작성에 실패했습니다.');
     } finally {
       setLoading(false);
     }

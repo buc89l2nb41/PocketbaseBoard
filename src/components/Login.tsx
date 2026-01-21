@@ -22,7 +22,7 @@ export default function Login({ onSuccess, onSwitchToSignup }: LoginProps) {
       onSuccess();
     } catch (error: any) {
       console.error('로그인 실패:', error);
-      alert(error.message || '로그인에 실패했습니다.');
+      alert('로그인에 실패했습니다.');
     } finally {
       setLoading(false);
     }

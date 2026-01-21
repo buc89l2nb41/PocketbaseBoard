@@ -16,6 +16,17 @@ export default function Signup({ onSuccess, onSwitchToLogin }: SignupProps) {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const passwordConfirmValue = formData.get('passwordConfirm') as string;
+    const nickname = formData.get('nickname') as string;
+
+    if (!nickname || nickname.trim().length === 0) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+
+    if (nickname.length < 2 || nickname.length > 20) {
+      alert('닉네임은 2자 이상 20자 이하여야 합니다.');
+      return;
+    }
 
     if (password !== passwordConfirmValue) {
       alert('비밀번호가 일치하지 않습니다.');
@@ -35,6 +46,7 @@ export default function Signup({ onSuccess, onSwitchToLogin }: SignupProps) {
         email,
         password,
         passwordConfirm: passwordConfirmValue,
+        name: nickname.trim(), // PocketBase의 name 필드에 닉네임 저장
       });
 
       // 자동 로그인
@@ -43,7 +55,7 @@ export default function Signup({ onSuccess, onSwitchToLogin }: SignupProps) {
       onSuccess();
     } catch (error: any) {
       console.error('회원가입 실패:', error);
-      alert(error.message || '회원가입에 실패했습니다.');
+      alert(`회원가입에 실패했습니다. ${error.message || ''}`);
     } finally {
       setLoading(false);
     }
@@ -61,6 +73,18 @@ export default function Signup({ onSuccess, onSwitchToLogin }: SignupProps) {
             name="email"
             required
             placeholder="이메일을 입력하세요"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="nickname">닉네임</label>
+          <input
+            type="text"
+            id="nickname"
+            name="nickname"
+            required
+            minLength={2}
+            maxLength={20}
+            placeholder="닉네임을 입력하세요 (2-20자)"
           />
         </div>
         <div className="form-group">

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import pb from './lib/pocketbase'
 import './App.css'
 import Board from './components/Board'
+import PostDetail from './components/PostDetail'
 import Login from './components/Login'
 import Signup from './components/Signup'
 
@@ -79,7 +81,10 @@ function App() {
             </button>
           </div>
         )}
-        <Board />
+        <Routes>
+          <Route path="/" element={<Board />} />
+          <Route path="/post/:id" element={<PostDetail />} />
+        </Routes>
       </main>
     </div>
   )

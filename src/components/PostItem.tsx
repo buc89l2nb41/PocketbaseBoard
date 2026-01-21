@@ -1,50 +1,30 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import pb from '../lib/pocketbase';
 import { Post } from '../types';
 import PostForm from './PostForm';
 
 interface PostItemProps {
   post: Post;
-  onDelete: () => void;
   onUpdate: () => void;
 }
 
-export default function PostItem({ post, onDelete, onUpdate }: PostItemProps) {
+export default function PostItem({ post, onUpdate }: PostItemProps) {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const currentUserId = pb.authStore.model?.id;
-  const isAuthor = post.author === currentUserId;
 
-  const handleDelete = async () => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-
-    try {
-      await pb.collection('posts').delete(post.id);
-      onDelete();
-    } catch (error: any) {
-      console.error('삭제 실패:', error);
-      alert(error.message || '삭제에 실패했습니다.');
-    }
-  };
-
-  // 이미지 URL 생성
-  const getImageUrl = () => {
-    if (!post.image) return null;
+  // 날짜를 간략하게 표시하는 함수
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     
-    try {
-      // post.image가 배열인 경우 첫 번째 요소 사용
-      const imageFilename = Array.isArray(post.image) ? post.image[0] : post.image;
-      
-      if (!imageFilename) return null;
-      
-      // PocketBase 파일 URL 직접 생성
-      return `${pb.baseUrl}/api/files/posts/${post.id}/${imageFilename}`;
-    } catch (error) {
-      console.error('이미지 URL 생성 실패:', error);
-      return null;
-    }
+    const year = date.getFullYear().toString().slice(-2); // YY 형식
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
-
-  const imageUrl = getImageUrl();
 
   if (isEditing) {
     return (
@@ -66,33 +46,19 @@ export default function PostItem({ post, onDelete, onUpdate }: PostItemProps) {
   }
 
   return (
-    <div className="post-item">
-      <div className="post-header">
-        <h3 className="post-title">{post.title}</h3>
-        {isAuthor && (
-          <div className="post-actions">
-            <button onClick={() => setIsEditing(true)} className="edit-button">
-              수정
-            </button>
-            <button onClick={handleDelete} className="delete-button">
-              삭제
-            </button>
-          </div>
-        )}
-      </div>
-      
-      <div className="post-content">{post.content}</div>
-      
-      {imageUrl && (
-        <div className="post-image">
-          <img src={imageUrl} alt={post.title} />
-        </div>
-      )}
-      
-      <div className="post-footer">
-        <span className="post-author">작성자: {post.authorName}</span>
+    <div 
+      className="post-item clickable"
+      onClick={() => {
+        navigate(`/post/${post.id}`);
+      }}
+    >
+      <h3 className="post-title">
+        {post.title}
+      </h3>
+      <div className="post-item-meta">
+        <span className="post-author">{post.authorName}</span>
         <span className="post-date">
-          {new Date(post.created).toLocaleString('ko-KR')}
+          {formatDate(post.created)}
         </span>
       </div>
     </div>
