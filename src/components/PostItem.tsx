@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import pb from '../lib/pocketbase';
 import { Post } from '../types';
 import PostForm from './PostForm';
 
