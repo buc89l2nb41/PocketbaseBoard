@@ -29,8 +29,15 @@ export default function PostItem({ post, onDelete, onUpdate }: PostItemProps) {
   // 이미지 URL 생성
   const getImageUrl = () => {
     if (!post.image) return null;
+    
     try {
-      return pb.files.getUrl(pb.collection('posts').getOne(post.id), post.image);
+      // post.image가 배열인 경우 첫 번째 요소 사용
+      const imageFilename = Array.isArray(post.image) ? post.image[0] : post.image;
+      
+      if (!imageFilename) return null;
+      
+      // PocketBase 파일 URL 직접 생성
+      return `${pb.baseUrl}/api/files/posts/${post.id}/${imageFilename}`;
     } catch (error) {
       console.error('이미지 URL 생성 실패:', error);
       return null;
