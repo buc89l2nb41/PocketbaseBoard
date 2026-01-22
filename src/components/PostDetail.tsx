@@ -206,7 +206,7 @@ export default function PostDetail() {
                 <div key={index} style={{ margin: '1.5rem 0' }}>
                   <img 
                     src={imageUrl} 
-                    alt={part.alt || post.title}
+                    alt={part.alt || post?.title || '이미지'}
                     style={{
                       maxWidth: '100%',
                       height: 'auto',
