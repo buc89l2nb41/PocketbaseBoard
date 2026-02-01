@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 5173,
+    host: true, // 모든 네트워크 인터페이스에서 접근 가능하도록 설정
     open: true
   }
 })
